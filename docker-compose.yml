@@ -1,0 +1,42 @@
+version: "3.7"
+
+services:
+  db:
+    container_name: "review_services_db"
+    platform: linux/x86_64
+    build:
+      context: .
+      # dockerfile: db.Dockerfile
+    image: mongo:mongo:6.0.4-jammy
+    networks:
+      - review_network
+    restart: always
+    ports:
+      # <Port exposed> : < Mongo Port running inside container>
+      - "27017:27017"
+    env_file:
+      - ./.env
+
+    volumes:
+      - database:/data/db
+    command: --default-authentication-plugin=caching_sha2_password
+    # command: --bind-address=0.0.0.0
+  # api:
+  #   container_name: "api"
+  #   build:
+  #     context: .
+  #     dockerfile: api.Dockerfile
+  #   networks:
+  #     - review_network
+  #   ports:
+  #     - "8090:8090"
+  #   depends_on:
+  #     - db
+
+  #   volumes:
+  #     - .:/app/
+
+networks:
+  review_network:
+volumes:
+  database:
