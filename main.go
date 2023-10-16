@@ -9,7 +9,6 @@ import (
 	"dineflow-review-services/routes"
 	"dineflow-review-services/utils/inits"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
 
