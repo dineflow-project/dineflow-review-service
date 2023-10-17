@@ -25,6 +25,7 @@ func GetReviewByID(w http.ResponseWriter, r *http.Request) {
 	// Get the ID from the URL path parameters
 	vars := mux.Vars(r)
 	reviewID := vars["_id"]
+	fmt.Println(reviewID)
 
 	// Query the database to get the  by ID using the new function
 	review, err := models.GetReviewByID(reviewID)

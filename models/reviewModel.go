@@ -48,7 +48,12 @@ func GetAllReviews() ([]Review, error) {
 
 func GetReviewByID(reviewID string) (Review, error) {
 	var review Review
-	filter := bson.M{"_id": reviewID}
+	objectID, iderr := primitive.ObjectIDFromHex(reviewID)
+	fmt.Println(objectID)
+	if iderr != nil {
+		return review, iderr
+	}
+	filter := bson.M{"_id": objectID}
 	err := reviewsCollection.FindOne(context.TODO(), filter).Decode(&review)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -78,7 +83,12 @@ func CreateReview(review Review) error {
 }
 
 func DeleteReviewByID(reviewID string) error {
-	result, err := reviewsCollection.DeleteOne(context.TODO(), bson.M{"_id": reviewID})
+	objectID, iderr := primitive.ObjectIDFromHex(reviewID)
+	if iderr != nil {
+		return iderr
+	}
+	filter := bson.M{"_id": objectID}
+	result, err := reviewsCollection.DeleteOne(context.TODO(), filter)
 	if err != nil {
 		return err
 	}
@@ -91,8 +101,20 @@ func DeleteReviewByID(reviewID string) error {
 func UpdateReviewByID(reviewID string, updatedReview Review) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	filter := bson.M{"_id": reviewID}
-	update := bson.M{"$set": updatedReview}
+	objectID, iderr := primitive.ObjectIDFromHex(reviewID)
+	if iderr != nil {
+		return iderr
+	}
+	filter := bson.M{"_id": objectID}
+	update := bson.M{
+		"$set": bson.M{
+			"Score":       updatedReview.Score,
+			"Description": updatedReview.Description,
+			"Timestamp":   updatedReview.Timestamp,
+			"Vendor_id":   updatedReview.Vendor_id,
+			"User_id":     updatedReview.User_id,
+		},
+	}
 	result, err := reviewsCollection.UpdateOne(ctx, filter, update)
 	if err != nil {
 		return err
