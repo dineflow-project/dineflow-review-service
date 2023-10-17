@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 	"runtime"
 
+	"dineflow-review-services/configs"
 	"dineflow-review-services/routes"
 	"dineflow-review-services/utils/inits"
 
@@ -20,8 +20,8 @@ func main() {
 
 	local_os := runtime.GOOS
 	if local_os == "windows" {
-		log.Fatal(http.ListenAndServe("127.0.0.1:"+os.Getenv("PORT"), nil))
+		log.Fatal(http.ListenAndServe("127.0.0.1:"+configs.EnvServicePort(), nil))
 	} else {
-		log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), nil))
+		log.Fatal(http.ListenAndServe(":"+configs.EnvServicePort(), nil))
 	}
 }

@@ -9,11 +9,11 @@ import (
 )
 
 func ProtectedRoute(r *mux.Router) {
-	r.HandleFunc("/canteens", controllers.GetAllReviews).Methods("GET")
-	r.HandleFunc("/canteens/{id:[0-9]+}", controllers.GetReviewByID).Methods("GET")
-	r.HandleFunc("/canteens", controllers.CreateReview).Methods("POST")
-	r.HandleFunc("/canteens/{id:[0-9]+}", controllers.UpdateReviewByID).Methods("PUT", "PATCH")
-	r.HandleFunc("/canteens/{id:[0-9]+}", controllers.DeleteReviewByID).Methods("DELETE")
+	r.HandleFunc("/reviews", controllers.GetAllReviews).Methods("GET")
+	r.HandleFunc("/reviews/{id:[0-9]+}", controllers.GetReviewByID).Methods("GET")
+	r.HandleFunc("/reviews", controllers.CreateReview).Methods("POST")
+	r.HandleFunc("/reviews/{id:[0-9]+}", controllers.UpdateReviewByID).Methods("PUT", "PATCH")
+	r.HandleFunc("/reviews/{id:[0-9]+}", controllers.DeleteReviewByID).Methods("DELETE")
 
 	http.Handle("/", r)
 }

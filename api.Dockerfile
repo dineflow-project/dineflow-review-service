@@ -1,25 +1,17 @@
-FROM golang:1.18-alpine
+FROM golang:1.19.5-bullseye AS builder
+
+COPY . /dineflow-review-services
+WORKDIR /dineflow-review-services
+RUN go mod tidy
+RUN go build
+
+FROM golang:1.19.5-bullseye AS runner
+# ENV GIN_MODE release
+
+RUN mkdir /app
 WORKDIR /app
+COPY --from=builder /dineflow-review-services/dineflow-review-services /app
 
-# add some necessary packages
-RUN apk update && \
-    apk add libc-dev && \
-    apk add gcc && \
-    apk add make
+EXPOSE 8091
 
-# prevent the re-installation of vendors at every change in the source code
-COPY ./go.mod go.sum ./
-RUN go mod download && go mod verify
-
-# Install Compile Daemon for go. We'll use it to watch changes in go files
-RUN go install -mod=mod github.com/githubnemo/CompileDaemon
-
-# Copy and build the app
-COPY . .
-COPY ./entrypoint.sh /entrypoint.sh
-
-# wait-for-it requires bash, which alpine doesn't ship with by default. Use wait-for instead
-ADD https://raw.githubusercontent.com/eficode/wait-for/v2.1.0/wait-for /usr/local/bin/wait-for
-RUN chmod +rx /usr/local/bin/wait-for /entrypoint.sh
-
-ENTRYPOINT [ "sh", "/entrypoint.sh" ]
+CMD ["/app/dineflow-review-services"]

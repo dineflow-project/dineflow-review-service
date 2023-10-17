@@ -26,3 +26,8 @@ func EnvMongoDBName() string {
 	loadDotEnv()
 	return os.Getenv("MONGO_DATABASE_NAME")
 }
+
+func EnvServicePort() string {
+	loadDotEnv()
+	return os.Getenv("PORT")
+}
