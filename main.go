@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"runtime"
 
-	"dineflow-review-services/configs"
-	"dineflow-review-services/routes"
-	"dineflow-review-services/utils/inits"
+	"dineflow-review-service/configs"
+	"dineflow-review-service/routes"
+	"dineflow-review-service/utils/inits"
 
 	"github.com/gorilla/mux"
 )

@@ -1,4 +1,4 @@
-module dineflow-review-services
+module dineflow-review-service
 
 go 1.19
 

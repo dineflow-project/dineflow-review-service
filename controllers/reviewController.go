@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"dineflow-review-services/models"
+	"dineflow-review-service/models"
 
 	"github.com/gorilla/mux"
 )
@@ -24,7 +24,7 @@ func GetAllReviews(w http.ResponseWriter, r *http.Request) {
 func GetReviewByID(w http.ResponseWriter, r *http.Request) {
 	// Get the ID from the URL path parameters
 	vars := mux.Vars(r)
-	reviewID := vars["id"]
+	reviewID := vars["_id"]
 
 	// Query the database to get the  by ID using the new function
 	review, err := models.GetReviewByID(reviewID)
@@ -62,7 +62,7 @@ func CreateReview(w http.ResponseWriter, r *http.Request) {
 
 func DeleteReviewByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	reviewID := vars["id"]
+	reviewID := vars["_id"]
 
 	err := models.DeleteReviewByID(reviewID)
 	if err != nil {
@@ -77,7 +77,7 @@ func DeleteReviewByID(w http.ResponseWriter, r *http.Request) {
 
 func UpdateReviewByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	reviewID := vars["id"]
+	reviewID := vars["_id"]
 
 	var updatedReview models.Review
 	decoder := json.NewDecoder(r.Body)

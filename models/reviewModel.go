@@ -2,20 +2,22 @@ package models
 
 import (
 	"context"
-	"dineflow-review-services/configs"
+	"dineflow-review-service/configs"
 	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Review struct {
-	Score       float64 `json:"id"`
-	Description string  `json:"description"`
-	Timestamp   string  `json:"timestamp"`
-	Vendor_id   string  `json:"vendor_id"`
-	User_id     string  `json:"user_id"`
+	ID          primitive.ObjectID `json:"_id" bson:"_id"`
+	Score       float64            `json:"score"`
+	Description string             `json:"description"`
+	Timestamp   string             `json:"timestamp"`
+	Vendor_id   string             `json:"vendor_id"`
+	User_id     string             `json:"user_id"`
 }
 
 var reviewsCollection *mongo.Collection = configs.GetCollection(configs.Db, "reviews")
@@ -60,10 +62,18 @@ func GetReviewByID(reviewID string) (Review, error) {
 func CreateReview(review Review) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	_, err := reviewsCollection.InsertOne(ctx, review)
+	reviewData := bson.M{
+		"Score":       review.Score,
+		"Description": review.Description,
+		"Timestamp":   review.Timestamp,
+		"Vendor_id":   review.Vendor_id,
+		"User_id":     review.User_id,
+	}
+	res, err := reviewsCollection.InsertOne(ctx, reviewData)
 	if err != nil {
 		return err
 	}
+	fmt.Println("New review created with mongodb _id: " + res.InsertedID.(primitive.ObjectID).Hex())
 	return nil
 }
 
@@ -73,7 +83,7 @@ func DeleteReviewByID(reviewID string) error {
 		return err
 	}
 	if result.DeletedCount == 0 {
-		return fmt.Errorf("the canteen id could not be found")
+		return fmt.Errorf("the review id could not be found")
 	}
 	return nil
 }

@@ -2,8 +2,8 @@ package inits
 
 import (
 	"context"
-	"dineflow-review-services/configs"
-	"dineflow-review-services/models"
+	"dineflow-review-service/configs"
+	"dineflow-review-service/models"
 	"fmt"
 	"log"
 	"time"
