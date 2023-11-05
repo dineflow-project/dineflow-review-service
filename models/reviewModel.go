@@ -15,7 +15,7 @@ type Review struct {
 	ID          primitive.ObjectID `json:"_id" bson:"_id"`
 	Score       float64            `json:"score"`
 	Description string             `json:"description"`
-	Timestamp   string             `json:"timestamp"`
+	Timestamp   time.Time          `json:"timestamp,omitempty"`
 	Vendor_id   string             `json:"vendor_id"`
 	User_id     string             `json:"user_id"`
 }
@@ -67,6 +67,7 @@ func GetReviewByID(reviewID string) (Review, error) {
 func CreateReview(review Review) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+	review.Timestamp = time.Now()
 	reviewData := bson.M{
 		"Score":       review.Score,
 		"Description": review.Description,

@@ -27,8 +27,8 @@ func InitializeDatabase() {
 		}
 	}
 	if !userCollectionExists {
-		fmt.Println("Reviews collections does not exist, creating `reviews` collection with `root` review")
-		CreateRootReview()
+		fmt.Println("Reviews collections does not exist, creating `reviews` collection")
+		// CreateRootReview()
 	}
 }
 
@@ -37,7 +37,7 @@ func CreateRootReview() (user models.Review, err error) {
 	rootReviewInfo := models.Review{
 		Score:       0,
 		Description: "",
-		Timestamp:   time.Now().Format("2006-01-02"),
+		Timestamp:   time.Now(),
 		Vendor_id:   "0000000000000",
 		User_id:     "0000000000000",
 	}
