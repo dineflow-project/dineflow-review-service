@@ -5,7 +5,7 @@ WORKDIR /dineflow-review-service
 RUN go mod tidy
 RUN go build
 
-FROM golang:1.19.5-bullseye AS runner
+FROM debian:bullseye-slim
 ENV GIN_MODE release
 
 RUN mkdir /app
