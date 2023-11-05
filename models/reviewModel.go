@@ -16,7 +16,7 @@ type Review struct {
 	Score       float64            `json:"score"`
 	Description string             `json:"description"`
 	Timestamp   time.Time          `json:"timestamp,omitempty"`
-	Vendor_id   string             `json:"vendor_id"`
+	Vendor_id   string             `json:"vendor_id" bson:"vendor_id"`
 	User_id     string             `json:"user_id"`
 }
 
@@ -62,6 +62,29 @@ func GetReviewByID(reviewID string) (Review, error) {
 		return review, err
 	}
 	return review, nil
+}
+
+func GetReviewByVendorID(vendorID string) ([]Review, error) {
+	var reviews []Review
+	filter := bson.M{"vendor_id": vendorID}
+	cursor, err := reviewsCollection.Find(context.TODO(), filter)
+	if err != nil {
+		return nil, err
+	}
+
+	for cursor.Next(context.TODO()) {
+		var review Review
+		if err := cursor.Decode(&review); err != nil {
+			return nil, err
+		}
+		reviews = append(reviews, review)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return reviews, nil
 }
 
 func CreateReview(review Review) error {

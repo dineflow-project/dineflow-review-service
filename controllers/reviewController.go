@@ -40,6 +40,24 @@ func GetReviewByID(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(review)
 }
 
+func GetReviewByVendorID(w http.ResponseWriter, r *http.Request) {
+	// Get the ID from the URL path parameters
+	vars := mux.Vars(r)
+	vendorID := vars["vendor_id"]
+
+	// Query the database to get the by vendor ID using the new function
+	review, err := models.GetReviewByVendorID(vendorID)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Serialize the review information to JSON and send it as the response
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(review)
+}
+
 func CreateReview(w http.ResponseWriter, r *http.Request) {
 	// Parse the incoming JSON request body
 	var newReview models.Review
