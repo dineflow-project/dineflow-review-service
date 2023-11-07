@@ -13,11 +13,11 @@ import (
 
 type Review struct {
 	ID          primitive.ObjectID `json:"_id" bson:"_id"`
-	Score       float64            `json:"score"`
-	Description string             `json:"description"`
-	Timestamp   time.Time          `json:"timestamp,omitempty"`
+	Score       float64            `json:"score" bson:"score"`
+	Description string             `json:"description" bson:"description"`
+	Timestamp   time.Time          `json:"timestamp,omitempty" bson:"timestamp,omitempty"`
 	Vendor_id   string             `json:"vendor_id" bson:"vendor_id"`
-	User_id     string             `json:"user_id"`
+	User_id     string             `json:"user_id" bson:"user_id"`
 }
 
 var reviewsCollection *mongo.Collection = configs.GetCollection(configs.Db, "reviews")
@@ -30,12 +30,13 @@ func GetAllReviews() ([]Review, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Println(cursor)
 	for cursor.Next(context.TODO()) {
 		var review Review
 		if err := cursor.Decode(&review); err != nil {
 			return nil, err
 		}
+		// fmt.Println(review)
 		reviews = append(reviews, review)
 	}
 
@@ -66,17 +67,26 @@ func GetReviewByID(reviewID string) (Review, error) {
 
 func GetReviewByVendorID(vendorID string) ([]Review, error) {
 	var reviews []Review
-	filter := bson.M{"vendor_id": vendorID}
-	cursor, err := reviewsCollection.Find(context.TODO(), filter)
+	filter := bson.M{"Vendor_id": vendorID}
+	fmt.Println(vendorID)
+	fmt.Println(filter)
+	// ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	// defer cancel()
+	cursor, err := reviewsCollection.Find(context.Background(), filter)
+	// fmt.Println(err)
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, fmt.Errorf("the vendor ID could not be found")
+		}
 		return nil, err
 	}
-
+	fmt.Println(cursor)
 	for cursor.Next(context.TODO()) {
 		var review Review
 		if err := cursor.Decode(&review); err != nil {
 			return nil, err
 		}
+		fmt.Println(review)
 		reviews = append(reviews, review)
 	}
 

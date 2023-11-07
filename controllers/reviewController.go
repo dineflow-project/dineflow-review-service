@@ -43,7 +43,7 @@ func GetReviewByID(w http.ResponseWriter, r *http.Request) {
 func GetReviewByVendorID(w http.ResponseWriter, r *http.Request) {
 	// Get the ID from the URL path parameters
 	vars := mux.Vars(r)
-	vendorID := vars["vendor_id"]
+	vendorID := vars["_id"]
 
 	// Query the database to get the by vendor ID using the new function
 	review, err := models.GetReviewByVendorID(vendorID)
