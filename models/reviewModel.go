@@ -68,8 +68,6 @@ func GetReviewByID(reviewID string) (Review, error) {
 func GetReviewByVendorID(vendorID string) ([]Review, error) {
 	var reviews []Review
 	filter := bson.M{"Vendor_id": vendorID}
-	fmt.Println(vendorID)
-	fmt.Println(filter)
 	// ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	// defer cancel()
 	cursor, err := reviewsCollection.Find(context.Background(), filter)
@@ -80,7 +78,6 @@ func GetReviewByVendorID(vendorID string) ([]Review, error) {
 		}
 		return nil, err
 	}
-	fmt.Println(cursor)
 	for cursor.Next(context.TODO()) {
 		var review Review
 		if err := cursor.Decode(&review); err != nil {

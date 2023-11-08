@@ -14,9 +14,11 @@ import (
 func GetAllReviews(w http.ResponseWriter, r *http.Request) {
 	results, err := models.GetAllReviews()
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		log.Print(err.Error())
 		http.Error(w, "Error", http.StatusInternalServerError)
 	}
+	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(results)
 }
@@ -30,12 +32,13 @@ func GetReviewByID(w http.ResponseWriter, r *http.Request) {
 	// Query the database to get the  by ID using the new function
 	review, err := models.GetReviewByID(reviewID)
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		log.Print(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Serialize the review information to JSON and send it as the response
+	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(review)
 }
@@ -48,12 +51,13 @@ func GetReviewByVendorID(w http.ResponseWriter, r *http.Request) {
 	// Query the database to get the by vendor ID using the new function
 	review, err := models.GetReviewByVendorID(vendorID)
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		log.Print(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Serialize the review information to JSON and send it as the response
+	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(review)
 }
@@ -70,6 +74,7 @@ func CreateReview(w http.ResponseWriter, r *http.Request) {
 
 	err := models.CreateReview(newReview)
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		log.Print(err.Error())
 		http.Error(w, "Database error", http.StatusInternalServerError)
 		return
@@ -85,6 +90,7 @@ func DeleteReviewByID(w http.ResponseWriter, r *http.Request) {
 
 	err := models.DeleteReviewByID(reviewID)
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		log.Print(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -108,6 +114,7 @@ func UpdateReviewByID(w http.ResponseWriter, r *http.Request) {
 
 	err := models.UpdateReviewByID(reviewID, updatedReview)
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		log.Print(err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
