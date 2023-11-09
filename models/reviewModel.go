@@ -87,6 +87,41 @@ func GetReviewByVendorID(vendorID string) ([]Review, error) {
 	return reviews, nil
 }
 
+func GetAvgReviewScoreByVendorID(vendorID string) (float64, error) {
+	filter := bson.M{"vendor_id": vendorID}
+	cursor, err := reviewsCollection.Find(context.Background(), filter)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return 0, fmt.Errorf("the vendor ID could not be found")
+		}
+		return 0, err
+	}
+
+	defer cursor.Close(context.Background())
+
+	if cursor.RemainingBatchLength() == 0 {
+		return 0, fmt.Errorf("no review found for this vendor ID")
+	}
+	var totalScore, count float64
+
+	for cursor.Next(context.Background()) {
+		var review Review
+		if err := cursor.Decode(&review); err != nil {
+			return 0, err
+		}
+		totalScore += float64(review.Score)
+		count++
+	}
+
+	averageScore := totalScore / count
+
+	if err := cursor.Err(); err != nil {
+		return 0, err
+	}
+
+	return averageScore, nil
+}
+
 func CreateReview(review Review) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

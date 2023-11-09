@@ -60,6 +60,24 @@ func GetReviewByVendorID(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(review)
 }
 
+func GetAvgReviewScoreByVendorID(w http.ResponseWriter, r *http.Request) {
+	// Get the ID from the URL path parameters
+	vars := mux.Vars(r)
+	vendorID := vars["_id"]
+
+	avg_score, err := models.GetAvgReviewScoreByVendorID(vendorID)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Print(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(avg_score)
+}
+
 func CreateReview(w http.ResponseWriter, r *http.Request) {
 	// Parse the incoming JSON request body
 	var newReview models.Review
