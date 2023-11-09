@@ -1,7 +1,7 @@
 version: "3.7"
 
 services:
-  api:
+  review_api:
     container_name: "review_services_api"
     build:
       context: .
@@ -13,26 +13,22 @@ services:
     env_file:
       - ./.env
 
-  db:
+  review_db:
     container_name: "review_services_db"
     platform: linux/x86_64
-    # build:
-    #   context: .
-      # dockerfile: db.Dockerfile
     image: mongo:4.4.6
     networks:
       - review_network
     restart: always
     ports:
-      # <Port exposed> : < Mongo Port running inside container>
       - "27016:27017"
     env_file:
       - ./.env
 
     volumes:
-      - database:/data/db
+      - review_database:/data/db
 
 networks:
   review_network:
 volumes:
-  database:
+  review_database:

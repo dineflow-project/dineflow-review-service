@@ -30,13 +30,11 @@ func GetAllReviews() ([]Review, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(cursor)
 	for cursor.Next(context.TODO()) {
 		var review Review
 		if err := cursor.Decode(&review); err != nil {
 			return nil, err
 		}
-		// fmt.Println(review)
 		reviews = append(reviews, review)
 	}
 
@@ -50,7 +48,6 @@ func GetAllReviews() ([]Review, error) {
 func GetReviewByID(reviewID string) (Review, error) {
 	var review Review
 	objectID, iderr := primitive.ObjectIDFromHex(reviewID)
-	fmt.Println(objectID)
 	if iderr != nil {
 		return review, iderr
 	}
@@ -67,11 +64,8 @@ func GetReviewByID(reviewID string) (Review, error) {
 
 func GetReviewByVendorID(vendorID string) ([]Review, error) {
 	var reviews []Review
-	filter := bson.M{"Vendor_id": vendorID}
-	// ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	// defer cancel()
+	filter := bson.M{"vendor_id": vendorID}
 	cursor, err := reviewsCollection.Find(context.Background(), filter)
-	// fmt.Println(err)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, fmt.Errorf("the vendor ID could not be found")
@@ -83,7 +77,6 @@ func GetReviewByVendorID(vendorID string) ([]Review, error) {
 		if err := cursor.Decode(&review); err != nil {
 			return nil, err
 		}
-		fmt.Println(review)
 		reviews = append(reviews, review)
 	}
 
@@ -99,17 +92,17 @@ func CreateReview(review Review) error {
 	defer cancel()
 	review.Timestamp = time.Now()
 	reviewData := bson.M{
-		"Score":       review.Score,
-		"Description": review.Description,
-		"Timestamp":   review.Timestamp,
-		"Vendor_id":   review.Vendor_id,
-		"User_id":     review.User_id,
+		"score":       review.Score,
+		"description": review.Description,
+		"timestamp":   review.Timestamp,
+		"vendor_id":   review.Vendor_id,
+		"user_id":     review.User_id,
 	}
-	res, err := reviewsCollection.InsertOne(ctx, reviewData)
+	_, err := reviewsCollection.InsertOne(ctx, reviewData)
 	if err != nil {
 		return err
 	}
-	fmt.Println("New review created with mongodb _id: " + res.InsertedID.(primitive.ObjectID).Hex())
+	// fmt.Println("New review created with mongodb _id: " + res.InsertedID.(primitive.ObjectID).Hex())
 	return nil
 }
 
