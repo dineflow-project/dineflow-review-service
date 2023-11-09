@@ -15,8 +15,7 @@ services:
 
   review_db:
     container_name: "review_services_db"
-    platform: linux/x86_64
-    image: mongo:4.4.6
+    image: mongo
     networks:
       - review_network
     restart: always
