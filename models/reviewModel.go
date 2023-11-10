@@ -92,7 +92,7 @@ func GetAvgReviewScoreByVendorID(vendorID string) (float64, error) {
 	cursor, err := reviewsCollection.Find(context.Background(), filter)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			return 0, fmt.Errorf("the vendor ID could not be found")
+			return 0, nil
 		}
 		return 0, err
 	}
@@ -100,7 +100,7 @@ func GetAvgReviewScoreByVendorID(vendorID string) (float64, error) {
 	defer cursor.Close(context.Background())
 
 	if cursor.RemainingBatchLength() == 0 {
-		return 0, fmt.Errorf("no review found for this vendor ID")
+		return 0, nil
 	}
 	var totalScore, count float64
 
